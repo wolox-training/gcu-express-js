@@ -7,12 +7,8 @@ const weetsService = {
   },
 
   async getOneRandomPhrase() {
-    try {
-      const { data } = await request(`/${this.getRandomNumber()}/math`);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
+    const { data } = await request(`/${this.getRandomNumber()}/math`);
+    return data;
   }
 };
 
