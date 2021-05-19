@@ -1,7 +1,7 @@
 {
-  "name": "WTraining",
-  "version": "0.1.0",
-  "description": "WTraining",
+  "name": "witter",
+  "version": "0.0.1",
+  "description": "Witter",
   "engines": {
     "node": "14.17.0",
     "npm": "6.4.1"
@@ -10,6 +10,7 @@
     "console": "node console.js",
     "cover": "npm run test -- --coverage",
     "test": "NODE_ENV=testing jest --runInBand --forceExit --detectOpenHandles",
+    "test:watch": "npm run test --watchAll",
     "test-inspect": "NODE_ENV=testing node --inspect --debug-brk jest",
     "eslint-check": "eslint --print-config .eslintrc.js --ignore-pattern ./.eslintrc.js | eslint-config-prettier-check",
     "lint": "eslint \"**/*.js\" --ignore-pattern ./.eslintrc.js",
