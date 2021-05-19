@@ -8,7 +8,7 @@ module.exports = {
     host: config.host,
     port: config.port,
     dialect: 'postgres',
-    logging: true
+    logging: console.log
   },
   testing: {
     username: config.username,
@@ -17,7 +17,7 @@ module.exports = {
     host: config.host,
     port: config.port,
     dialect: 'postgres',
-    logging: false
+    logging: console.log
   },
   production: {
     username: config.username,
@@ -26,6 +26,6 @@ module.exports = {
     host: config.host,
     port: config.port,
     dialect: 'postgres',
-    logging: false
+    logging: console.log
   }
 };

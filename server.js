@@ -7,9 +7,8 @@ const port = config.common.api.port || 8080;
 
 Promise.resolve()
   .then(() => migrationsManager.check())
-  .then(() => {
+  .then(async () => {
     app.listen(port);
-
     logger.info(`Listening on port: ${port}`);
   })
-  .catch(logger.error);
+  .catch(err => console.log(err));

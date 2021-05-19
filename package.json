@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "WTraining",
   "engines": {
-    "node": "10.14.1",
+    "node": "14.17.0",
     "npm": "6.4.1"
   },
   "scripts": {
@@ -66,17 +66,16 @@
     }
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "jwt-simple": "^0.5.1",
-    "sequelize": "^5.21.5",
-    "factory-girl": "^5.0.4",
-    "pg": "^7.4.1",
-    "umzug": "^2.1.0",
-    "express-wolox-logger": "^2.0.0",
     "axios": "^0.19.2",
-    "swagger-ui-express": "^4.0.7"
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "express-wolox-logger": "^2.0.0",
+    "factory-girl": "^5.0.4",
+    "jwt-simple": "^0.5.1",
+    "pg": "^8.0.3",
+    "sequelize": "^5.21.7",
+    "swagger-ui-express": "^4.0.7",
+    "umzug": "^2.1.0"
   },
   "devDependencies": {
     "babel": "6.23.0",

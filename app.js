@@ -1,6 +1,8 @@
-const { expressMiddleware, expressRequestIdMiddleware } = require('express-wolox-logger');
+const {
+  expressMiddleware,
+  expressRequestIdMiddleware
+} = require('express-wolox-logger');
 const express = require('express');
-const bodyParser = require('body-parser');
 const swaggerUi = require('swagger-ui-express');
 const config = require('./config');
 const routes = require('./app/routes');
@@ -25,8 +27,8 @@ const bodyParserUrlencodedConfig = () => ({
 const app = express();
 
 // Client must send "Content-Type: application/json" header
-app.use(bodyParser.json(bodyParserJsonConfig()));
-app.use(bodyParser.urlencoded(bodyParserUrlencodedConfig()));
+app.use(express.json(bodyParserJsonConfig()));
+app.use(express.urlencoded(bodyParserUrlencodedConfig()));
 app.use(expressRequestIdMiddleware());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(documentation));
 

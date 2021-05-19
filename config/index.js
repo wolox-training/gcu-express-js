@@ -15,7 +15,10 @@ const deepMerge = (target, source) => {
     return Object.keys(source).reduce(
       (output, key) => ({
         ...output,
-        [key]: isObject(source[key]) && key in target ? deepMerge(target[key], source[key]) : source[key]
+        [key]:
+          isObject(source[key]) && key in target
+            ? deepMerge(target[key], source[key])
+            : source[key]
       }),
       { ...target }
     );
