@@ -1,7 +1,7 @@
 {
-  "name": "WTraining",
-  "version": "0.1.0",
-  "description": "WTraining",
+  "name": "witter",
+  "version": "0.0.1",
+  "description": "Witter",
   "engines": {
     "node": "14.17.0",
     "npm": "6.4.1"
