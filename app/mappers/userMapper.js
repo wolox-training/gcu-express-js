@@ -5,7 +5,7 @@
 class UserResponse {
   constructor({ id, name, email, last_name, createdAt } = {}) {
     this.id = id;
-    this.name = name;
+    this.first_name = name;
     this.last_name = last_name;
     this.email = email;
     this.created_at = createdAt;

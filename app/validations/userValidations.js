@@ -1,5 +1,5 @@
 const { check } = require('express-validator');
-const { errorMessages } = require('../errors');
+const errorMessages = require('../constants/errorMessages');
 
 exports.validateLogin = [
   check('email', errorMessages.emailRequired).notEmpty(),

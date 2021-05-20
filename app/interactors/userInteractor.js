@@ -1,17 +1,15 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const { findUserByEmail, createUser } = require('../services/userService');
+const logger = require('../logger');
+const { databaseError } = require('../errors');
+const errorMessages = require('../constants/errorMessages');
 
-const userInteractor = {
-  async encryptPassword(password) {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
-  },
+exports.signUp = async body => {
+  const userExists = await findUserByEmail(body.email);
 
-  async generateToken(userId) {
-    return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-      expiresIn: '30m'
-    });
+  if (userExists) {
+    logger.error(errorMessages.userAlreadyExist);
+    throw databaseError(errorMessages.userAlreadyExist);
   }
-};
 
-module.exports = userInteractor;
+  return createUser(body);
+};
