@@ -4,7 +4,7 @@ const weetsService = {
   getRandomNumber: () => Math.floor(Math.random() * (9999 - 0 + 1) + 0),
 
   getOneRandomPhrase: async () => {
-    const { data } = await request(`/${this.getRandomNumber()}/math`);
+    const { data } = await request(`/${weetsService.getRandomNumber()}/math`);
     return data;
   }
 };
