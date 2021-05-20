@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, DataTypes) => {
-    await queryInterface.createTable('user', {
+    await queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,7 +12,7 @@ module.exports = {
       name: {
         type: DataTypes.STRING
       },
-      surname: {
+      last_name: {
         type: DataTypes.STRING
       },
       email: {
@@ -20,6 +20,7 @@ module.exports = {
         allowNull: false,
         unique: true
       },
+      // TIMESTAMPS
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE
@@ -31,6 +32,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('user');
+    await queryInterface.dropTable('users');
   }
 };

@@ -6,6 +6,7 @@ const UserModel = require('../models/userModel')(
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const logger = require('../logger');
+const { databaseError, errorMessages } = require('../errors');
 
 // Service
 const userService = {
@@ -20,25 +21,25 @@ const userService = {
     });
   },
 
-  async signUp({ name, surname, email, password }) {
+  async signUp({ name, last_name, email, password }) {
     const existUser = await UserModel.findOne({ where: { email } });
     if (existUser) {
       logger.error('Usuario existente');
-      throw new Error('Usuario existente');
+      throw databaseError(errorMessages.existingUser);
     }
 
     const hash = await this.encryptPassword(password);
 
     const user = await UserModel.create({
       name,
-      surname,
+      last_name,
       email: email.trim().toLowerCase(),
       password: hash
     });
 
     const token = await this.generateToken(user.id);
 
-    logger.info(`Usuario creado: ${user.name} ${user.surname}`);
+    logger.info(`Usuario creado: ${user.name} ${user.last_name}`);
     return { user, token };
   }
 };

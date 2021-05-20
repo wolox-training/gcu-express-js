@@ -1,26 +1,27 @@
 const { check } = require('express-validator');
+const { errorMessages } = require('../errors');
 
 exports.validateLogin = [
-  check('email', 'Email requerido').notEmpty(),
-  check('email', 'Email no válido').isEmail(),
-  check('email', 'Email no válido').custom(email => {
+  check('email', errorMessages.emailRequired).notEmpty(),
+  check('email', errorMessages.invalidEmail).isEmail(),
+  check('email', errorMessages.invalidEmail).custom(email => {
     if (
       !email
         .trim()
         .toLowerCase()
         .includes('@wolox')
     )
-      throw new Error('Email no válido, no pertenece a Wolox');
+      throw new Error(errorMessages.invalidEmailResource);
 
     return true;
   }),
-  check('password', 'Contraseña requerida').notEmpty(),
-  check('password', 'Contraseña no válida').isLength({ min: 8 }),
-  check('password', 'Contraseña no válida').isAlphanumeric()
+  check('password', errorMessages.passwordRequired).notEmpty(),
+  check('password', errorMessages.invalidPassword).isLength({ min: 8 }),
+  check('password', errorMessages.invalidPassword).isAlphanumeric()
 ];
 
 exports.validateRegister = [
-  check('name', 'Nombre requerido').notEmpty(),
-  check('surname', 'Apellido requerido').notEmpty(),
+  check('name', errorMessages.nameRequired).notEmpty(),
+  check('last_name', errorMessages.lastNameRequired).notEmpty(),
   ...this.validateLogin
 ];
