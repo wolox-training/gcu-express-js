@@ -1,12 +1,12 @@
 const router = require('express').Router();
-const weeksService = require('../services/weetsService');
 const asyncWrapper = require('../utils/asyncWrapper');
+const { getOneRandomPhrase } = require('../services/weetsService');
 
 router.get(
   '/',
   [],
   asyncWrapper(async (req, res) => {
-    const phrase = await weeksService.getOneRandomPhrase();
+    const phrase = await getOneRandomPhrase();
     return res.status(200).json(phrase);
   })
 );

@@ -38,8 +38,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(documentation));
 if (!config.isTesting) app.use(expressMiddleware({ loggerFn: logger.info }));
 
 // routes handling
-app.get('/', (_, res) => res.status(200).json(process.uptime()));
-app.use('/api/v1', routes);
+app.use(routes);
 // errors handling
 app.use(errors.handle);
 
