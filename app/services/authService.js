@@ -5,7 +5,9 @@ const UserModel = require('../models/userModel')(
 );
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const logger = require('../logger');
 
+// Service
 const userService = {
   async encryptPassword(password) {
     const salt = await bcrypt.genSalt(10);
@@ -20,7 +22,10 @@ const userService = {
 
   async signUp({ name, surname, email, password }) {
     const existUser = await UserModel.findOne({ where: { email } });
-    if (existUser) throw new Error('Usuario existente');
+    if (existUser) {
+      logger.error('Usuario existente');
+      throw new Error('Usuario existente');
+    }
 
     const hash = await this.encryptPassword(password);
 
@@ -33,6 +38,7 @@ const userService = {
 
     const token = await this.generateToken(user.id);
 
+    logger.info(`Usuario creado: ${user.name} ${user.surname}`);
     return { user, token };
   }
 };
