@@ -1,3 +1,4 @@
+// eslint-disable-next-line new-cap
 const router = require('express').Router();
 const weeksService = require('../services/weetsService');
 const asyncWrapper = require('../utils/asyncWrapper');

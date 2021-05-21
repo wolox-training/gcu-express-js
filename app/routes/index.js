@@ -1,3 +1,4 @@
+// eslint-disable-next-line new-cap
 const router = require('express').Router();
 const weetsRoutes = require('./weetsRoutes');
 const userRoutes = require('./userRoutes');

@@ -10,8 +10,9 @@ exports.validateLogin = [
         .trim()
         .toLowerCase()
         .includes('@wolox')
-    )
+    ) {
       throw new Error(errorMessages.invalidEmailResource);
+    }
 
     return true;
   }),
