@@ -1,7 +1,4 @@
-const {
-  expressMiddleware,
-  expressRequestIdMiddleware
-} = require('express-wolox-logger');
+const { expressMiddleware, expressRequestIdMiddleware } = require('express-wolox-logger');
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const config = require('./config');
