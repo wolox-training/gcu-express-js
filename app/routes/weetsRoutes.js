@@ -1,14 +1,6 @@
 const router = require('express').Router();
-const asyncWrapper = require('../utils/asyncWrapper');
-const { getOneRandomPhrase } = require('../services/weetsService');
+const { getWeet } = require('../controllers/weetsController');
 
-router.get(
-  '/',
-  [],
-  asyncWrapper(async (req, res) => {
-    const phrase = await getOneRandomPhrase();
-    return res.status(200).json(phrase);
-  })
-);
+router.get('/', [], getWeet);
 
 module.exports = router;
