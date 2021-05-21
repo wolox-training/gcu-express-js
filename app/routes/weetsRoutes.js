@@ -1,15 +1,7 @@
 // eslint-disable-next-line new-cap
 const router = require('express').Router();
-const weeksService = require('../services/weetsService');
-const asyncWrapper = require('../utils/asyncWrapper');
+const { getWeet } = require('../controllers/weetsController');
 
-router.get(
-  '/',
-  [],
-  asyncWrapper(async (req, res) => {
-    const phrase = await weeksService.getOneRandomPhrase();
-    return res.status(200).json(phrase);
-  })
-);
+router.get('/', [], getWeet);
 
 module.exports = router;
