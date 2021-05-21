@@ -30,7 +30,7 @@ Promise.resolve().then(() => {
     files.forEach(file => {
       const serviceMethods = require(`${servicesPath}${file}`);
       const asyncServiceMethods = convertObjectFunctionsToAsync(serviceMethods);
-      replServer.context[`${file.split('.')[0]}Service`] = asyncServiceMethods;
+      replServer.context[`${file.split('.')[0]}`] = asyncServiceMethods;
     });
   });
 });

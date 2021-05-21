@@ -5,7 +5,7 @@ const {
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const config = require('./config');
-const routes = require('./app/routes');
+const routes = require('./app/routes/');
 const errors = require('./app/middlewares/errors');
 const documentation = require('./documentation');
 const logger = require('./app/logger');
@@ -30,12 +30,16 @@ const app = express();
 app.use(express.json(bodyParserJsonConfig()));
 app.use(express.urlencoded(bodyParserUrlencodedConfig()));
 app.use(expressRequestIdMiddleware());
+
+// Swagger docs
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(documentation));
 
+// logger
 if (!config.isTesting) app.use(expressMiddleware({ loggerFn: logger.info }));
 
-routes.init(app);
-
+// routes handling
+app.use(routes);
+// errors handling
 app.use(errors.handle);
 
 module.exports = app;
