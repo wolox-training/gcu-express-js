@@ -7,7 +7,9 @@ const errorMessages = {
   passwordRequired: 'Contraseña requerida',
   firstNameRequired: 'Nombre requerido',
   lastNameRequired: 'Apellido requerido',
-  userAlreadyExist: 'Usuario existente'
+  userAlreadyExist: 'Usuario existente',
+  userNotFound: 'No se encontró al usuario',
+  invalidCredentials: 'Credenciales incorrectas'
 };
 
 module.exports = errorMessages;

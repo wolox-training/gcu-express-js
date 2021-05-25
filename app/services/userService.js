@@ -12,6 +12,11 @@ const encryptPassword = async password => {
 
 const generateToken = userId => jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30m' });
 
+exports.comparePassword = async (password, dbPassword) => {
+  const match = await bcrypt.compare(password, dbPassword);
+  return match;
+};
+
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
 exports.createUser = async ({ firstName, lastName, email, password }) => {
@@ -24,8 +29,15 @@ exports.createUser = async ({ firstName, lastName, email, password }) => {
     password: hash
   });
 
-  const token = await generateToken(user.id);
+  const token = generateToken(user.id);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
+  return { user, token };
+};
+
+exports.login = user => {
+  const token = generateToken(user.id);
+
+  logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
