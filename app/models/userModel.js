@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'last_name'
       },
-      email: { type: DataTypes.STRING, allowNull: false, unique: true },
+      email: { type: DataTypes.STRING, allowNull: false, unique: true }
+    },
     {
       timestamps: true,
       underscored: true,
