@@ -22,7 +22,7 @@ exports.validateLogin = [
 ];
 
 exports.validateRegister = [
-  check('name', errorMessages.nameRequired).notEmpty(),
-  check('last_name', errorMessages.lastNameRequired).notEmpty(),
+  check('firstName', errorMessages.nameRequired).notEmpty(),
+  check('lastName', errorMessages.lastNameRequired).notEmpty(),
   ...this.validateLogin
 ];

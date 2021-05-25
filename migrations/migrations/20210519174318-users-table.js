@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: DataTypes.INTEGER
       },
-      name: {
+      first_name: {
         type: DataTypes.STRING
       },
       last_name: {
