@@ -4,7 +4,7 @@ const UserModel = require('../models').user;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
 
-const encryptPassword = async password => {
+exports.encryptPassword = async password => {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
   return hash;
@@ -20,7 +20,7 @@ exports.comparePassword = async (password, dbPassword) => {
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
 exports.createUser = async ({ firstName, lastName, email, password }) => {
-  const hash = await encryptPassword(password);
+  const hash = await this.encryptPassword(password);
 
   const user = await UserModel.create({
     firstName,
