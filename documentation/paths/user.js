@@ -27,7 +27,9 @@ module.exports = {
           }
         }
       }
-    },
+    }
+  },
+  '/users/signup': {
     post: {
       tags: ['CRUD operations'],
       description: 'Create user',
