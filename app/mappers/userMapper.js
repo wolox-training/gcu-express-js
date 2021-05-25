@@ -3,13 +3,13 @@
  * Added in order to avoid return password as response.
  */
 class UserResponse {
-  constructor({ id, name, email, last_name, createdAt } = {}) {
+  constructor({ id, firstName, lastName, email, createdAt, updatedAt } = {}) {
     this.id = id;
-    this.first_name = name;
-    this.last_name = last_name;
+    this.first_name = firstName;
+    this.last_name = lastName;
     this.email = email;
     this.created_at = createdAt;
-    this.updated_at = createdAt;
+    this.updated_at = updatedAt;
   }
 }
 
