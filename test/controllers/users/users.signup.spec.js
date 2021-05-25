@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('../../app');
-const UserModel = require('../../app/models').user;
+const app = require('../../../app');
+const UserModel = require('../../../app/models').user;
 
 describe('POST /users/signup', () => {
   it('Should create a user', async () => {
