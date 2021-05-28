@@ -1,7 +1,15 @@
-const { findUserByEmail, createUser, login, comparePassword } = require('../services/userService');
+const {
+  findUserByEmail,
+  createUser,
+  login,
+  comparePassword,
+  getAllUsers
+} = require('../services/userService');
 const logger = require('../logger');
 const { databaseError, authenticationError } = require('../errors');
 const errorMessages = require('../constants/errorMessages');
+
+exports.getUsers = query => getAllUsers(query);
 
 exports.signUp = async body => {
   const userExists = await findUserByEmail(body.email);

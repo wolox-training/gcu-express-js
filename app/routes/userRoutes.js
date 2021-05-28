@@ -7,6 +7,14 @@ const { userSchema, sessionSchema } = require('../validations');
 const userMapper = require('../mappers/userMapper');
 const httpCodes = require('../constants/httpCodes');
 
+router.get(
+  '/',
+  asyncWrapper(async (req, res) => {
+    const { results, pagination } = await userInteractor.getUsers(req.query);
+    return res.status(httpCodes.CREATED).json({ users: results.map(u => userMapper(u)), pagination });
+  })
+);
+
 router.post(
   '/signup',
   [validateSchema(userSchema)],

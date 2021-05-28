@@ -3,6 +3,13 @@ const bcrypt = require('bcryptjs');
 const UserModel = require('../models').user;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
+const paginate = require('../utils/paginate');
+
+exports.getAllUsers = async query => {
+  const { results, pagination } = await paginate(UserModel, {}, query);
+
+  return { results, pagination };
+};
 
 exports.encryptPassword = async password => {
   const salt = await bcrypt.genSalt(10);
