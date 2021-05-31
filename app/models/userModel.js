@@ -20,7 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         field: 'last_name'
       },
       email: { type: DataTypes.STRING, allowNull: false, unique: true },
-      password: { type: DataTypes.STRING, allowNull: false }
+      password: { type: DataTypes.STRING, allowNull: false },
+      role: {
+        // eslint-disable-next-line new-cap
+        type: DataTypes.ENUM(['user', 'admin']),
+        defaultValue: 'user'
+      }
     },
     {
       timestamps: true,
