@@ -44,7 +44,8 @@ describe('POST /users/signup', () => {
     });
 
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
-    expect(response.body).toHaveProperty('message', 'Email no válido, no pertenece a Wolox');
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toMatch(/Email no válido/i);
     expect(createdUser).toBe(null);
   });
 
@@ -65,8 +66,8 @@ describe('POST /users/signup', () => {
     });
 
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
-    expect(response.body).toHaveProperty('message', 'Contraseña no válida');
-
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toMatch(/La contraseña debe tener como minimo 8 caracteres/i);
     expect(createdUser).toBe(null);
   });
 
@@ -87,7 +88,8 @@ describe('POST /users/signup', () => {
     });
 
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
-    expect(response.body).toHaveProperty('message', 'Email requerido');
+    expect(response.body).toHaveProperty('message');
+    expect(response.body.message).toMatch(/Email requerido/i);
     expect(createdUser).toBe(null);
   });
 
