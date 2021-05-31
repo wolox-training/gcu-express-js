@@ -22,7 +22,7 @@ async function paginate(model, query, options) {
     // The number of the current page that is being shown
     current_page: page,
     // Describes the total amount of pages calculated, based in the total of objects sent to the paginator, and the requested limit
-    total_pages: results.count % limit === 0 ? results.count / limit : Math.floor(results.count / limit) + 1
+    total_pages: Math.ceil(results.count / limit)
   };
 
   if (endIndex < results.count) {
