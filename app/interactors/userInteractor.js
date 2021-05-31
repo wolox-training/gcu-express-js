@@ -44,8 +44,8 @@ exports.createUserAdmin = async body => {
 
   if (userExists) {
     logger.info(`Se ha actualizado al usuario ${userExists.name} como administrador`);
-    const userUpdated = await updateUser(userExists.id, { role: 'admin' });
-    return userUpdated;
+    const userUpdatedToAdmin = await updateUser(userExists.id, { role: 'admin' });
+    return { user: userUpdatedToAdmin };
   }
 
   return createUser({ ...body, role: 'admin' });

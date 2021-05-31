@@ -17,7 +17,8 @@ exports.encryptPassword = async password => {
   return hash;
 };
 
-const generateToken = userId => jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30m' });
+const generateToken = user =>
+  jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30m' });
 
 exports.comparePassword = async (password, dbPassword) => {
   const match = await bcrypt.compare(password, dbPassword);
@@ -37,19 +38,20 @@ exports.createUser = async ({ firstName, lastName, email, role, password }) => {
     role
   });
 
-  const token = generateToken(user.id);
+  const token = generateToken(user);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
 
 exports.login = user => {
-  const token = generateToken(user.id);
+  const token = generateToken(user);
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
 
 exports.updateUser = async (userId, body) => {
-  await UserModel.update(body, { where: { id: userId } }, { returning: true });
+  const userUpdated = await UserModel.update(body, { where: { id: userId }, returning: true });
+  return userUpdated[1][0].get();
 };
