@@ -9,7 +9,9 @@ const errorMessages = {
   lastNameRequired: 'Apellido requerido',
   userAlreadyExist: 'Usuario existente',
   userNotFound: 'No se encontró al usuario',
-  invalidCredentials: 'Credenciales incorrectas'
+  invalidCredentials: 'Credenciales incorrectas',
+  invalidPagePagination: 'Página no válida',
+  invalidLimitPagination: 'Límite no válido'
 };
 
 module.exports = errorMessages;
