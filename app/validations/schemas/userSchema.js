@@ -1,4 +1,6 @@
 const errorMessages = require('../../constants/errorMessages');
+const emailSchema = require('./emailSchema');
+const passwordSchema = require('./passwordSchema');
 
 module.exports = {
   firstName: {
@@ -13,27 +15,6 @@ module.exports = {
     notEmpty: true,
     errorMessage: errorMessages.lastNameRequired
   },
-  email: {
-    in: 'body',
-    optional: false,
-    notEmpty: true,
-    errorMessage: errorMessages.emailRequired,
-    matches: {
-      errorMessage: errorMessages.invalidEmail,
-      options: /\S+@wolox.\S+/
-    }
-  },
-  password: {
-    in: 'body',
-    optional: false,
-    notEmpty: true,
-    errorMessage: errorMessages.passwordRequired,
-    isLength: {
-      errorMessage: errorMessages.invalidPasswordLength,
-      options: { min: 8 }
-    },
-    isAlphanumeric: {
-      errorMessage: errorMessages.invalidPassword
-    }
-  }
+  email: emailSchema,
+  password: passwordSchema
 };

@@ -1,6 +1,6 @@
-const { findUserByEmail, createUser } = require('../services/userService');
+const { findUserByEmail, createUser, login, comparePassword } = require('../services/userService');
 const logger = require('../logger');
-const { databaseError } = require('../errors');
+const { databaseError, authenticationError } = require('../errors');
 const errorMessages = require('../constants/errorMessages');
 
 exports.signUp = async body => {
@@ -12,4 +12,20 @@ exports.signUp = async body => {
   }
 
   return createUser(body);
+};
+
+exports.signIn = async body => {
+  const userExists = await findUserByEmail(body.email);
+
+  if (!userExists) {
+    logger.error(errorMessages.userNotFound);
+    throw databaseError(errorMessages.userNotFound);
+  }
+  const isEqual = await comparePassword(body.password, userExists.password);
+  if (!isEqual) {
+    logger.error(errorMessages.invalidCredentials);
+    throw authenticationError(errorMessages.invalidCredentials);
+  }
+
+  return login(userExists);
 };
