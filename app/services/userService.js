@@ -26,14 +26,15 @@ exports.comparePassword = async (password, dbPassword) => {
 
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
-exports.createUser = async ({ firstName, lastName, email, password }) => {
+exports.createUser = async ({ firstName, lastName, email, role, password }) => {
   const hash = await this.encryptPassword(password);
 
   const user = await UserModel.create({
     firstName,
     lastName,
     email: formatEmail(email),
-    password: hash
+    password: hash,
+    role
   });
 
   const token = generateToken(user.id);
@@ -47,4 +48,8 @@ exports.login = user => {
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
+};
+
+exports.updateUser = async (userId, body) => {
+  await UserModel.update(body, { where: { id: userId } }, { returning: true });
 };

@@ -3,7 +3,8 @@ const {
   createUser,
   login,
   comparePassword,
-  getAllUsers
+  getAllUsers,
+  updateUser
 } = require('../services/userService');
 const logger = require('../logger');
 const { databaseError, authenticationError } = require('../errors');
@@ -36,4 +37,16 @@ exports.signIn = async body => {
   }
 
   return login(userExists);
+};
+
+exports.createUserAdmin = async body => {
+  const userExists = await findUserByEmail(body.email);
+
+  if (userExists) {
+    logger.info(`Se ha actualizado al usuario ${userExists.name} como administrador`);
+    const userUpdated = await updateUser(userExists.id, { role: 'admin' });
+    return userUpdated;
+  }
+
+  return createUser({ ...body, role: 'admin' });
 };
