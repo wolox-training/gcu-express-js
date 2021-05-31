@@ -9,7 +9,10 @@ const validateSchema = schema => [
     const errors = validationResult(req);
     if (errors.isEmpty()) next();
     else {
-      const errorMessage = errors.array()[0].msg;
+      const errorMessage = errors
+        .array()
+        .map(err => err.msg)
+        .join('; ');
 
       logger.error(`Validation error: ${req.path}: ${errorMessage}`);
       next(validationError(errorMessage));
