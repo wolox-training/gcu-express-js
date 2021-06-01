@@ -37,7 +37,7 @@ describe('GET /users', () => {
       .expect(401);
   });
 
-  it('Should return a list of users', async () => {
+  it.only('Should return a list of users', async () => {
     const { statusCode, body } = await request(app)
       .get('/users')
       .set('Authorization', `Bearer ${jwtToken}`);
@@ -45,6 +45,8 @@ describe('GET /users', () => {
     expect(statusCode).toEqual(200);
     expect(body.users).toBeDefined();
     expect(body.users).toHaveLength(2);
+    expect(body.users[0].points).toBeDefined();
+    expect(body.users[0].points).toBe('DEVELOPER');
     expect(body.pagination).toBeDefined();
   });
 
