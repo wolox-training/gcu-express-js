@@ -6,7 +6,7 @@ module.exports = user => ({
   lastName: user.lastName,
   email: user.email,
   role: user.role,
-  points: getUserPosition(43),
+  points: getUserPosition(user.points),
   createdAt: user.createdAt,
   updatedAt: user.updatedAt
 });
