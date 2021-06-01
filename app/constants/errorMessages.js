@@ -10,7 +10,9 @@ const errorMessages = {
   userAlreadyExist: 'Usuario existente',
   userNotFound: 'No se encontró al usuario',
   invalidCredentials: 'Credenciales incorrectas',
-  invalidWeets: 'The weet must be lower than 140 characters'
+  invalidWeets: 'The weet must be lower than 140 characters',
+  invalidPagePagination: 'Página no válida',
+  invalidLimitPagination: 'Límite no válido'
 };
 
 module.exports = errorMessages;

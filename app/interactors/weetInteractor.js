@@ -4,6 +4,8 @@ const errorMessages = require('../constants/errorMessages');
 const { validationError, databaseError } = require('../errors');
 const logger = require('../logger');
 
+exports.getWeets = query => weetService.getAllWeets(query);
+
 exports.createWeet = async body => {
   const user = await userService.findUserByEmail(body.email);
   if (!user) throw databaseError(errorMessages.userNotFound);

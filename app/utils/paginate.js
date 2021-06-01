@@ -1,7 +1,11 @@
+const paginationMapper = require('../mappers/paginationMapper');
+
 async function paginate(model, query, options) {
   const opts = { limit: 25, page: 1, url: process.env.SITE_URL, ...options };
-  const limit = parseInt(opts.limit);
-  const page = parseInt(opts.page);
+  const sanitizeQuery = paginationMapper(opts);
+
+  const limit = parseInt(sanitizeQuery.limit);
+  const page = parseInt(sanitizeQuery.page);
 
   const results = await model.findAndCountAll({
     limit,
@@ -27,11 +31,11 @@ async function paginate(model, query, options) {
 
   if (endIndex < results.count) {
     pagination.next_page = page + 1;
-    pagination.next_page_link = `${opts.url}?page=${page + 1}&limit=${limit}`;
+    pagination.next_page_link = `${sanitizeQuery.url}?page=${page + 1}&limit=${limit}`;
   }
   if (startIndex > 0) {
     pagination.previous_page = page - 1;
-    pagination.previous_page_link = `${opts.url}?page=${page - 1}&limit=${limit}`;
+    pagination.previous_page_link = `${sanitizeQuery.url}?page=${page - 1}&limit=${limit}`;
   }
 
   return {
