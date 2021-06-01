@@ -7,7 +7,10 @@ const dbConfig = require('../../config/db')[config.environment];
 const basename = path.basename(__filename);
 const db = {};
 
-const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+  ...dbConfig,
+  logging: false
+});
 
 fs.readdirSync(__dirname)
   .filter(file => file.indexOf('.') !== 0 && file !== basename && file.endsWith('Model.js'))
