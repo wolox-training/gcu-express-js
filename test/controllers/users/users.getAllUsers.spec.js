@@ -37,7 +37,7 @@ describe('GET /users', () => {
       .expect(401);
   });
 
-  it.only('Should return a list of users', async () => {
+  it('Should return a list of users', async () => {
     const { statusCode, body } = await request(app)
       .get('/users')
       .set('Authorization', `Bearer ${jwtToken}`);
