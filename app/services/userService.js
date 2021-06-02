@@ -4,8 +4,8 @@ const UserModel = require('../models').user;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
-const isBetweenTwoNumbers = require('../utils/isBetweenTwoNumbers');
 const userPositions = require('../constants/userPositions');
+const findPointKey = require('../utils/findPointKey');
 
 const generateToken = user =>
   jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30m' });
@@ -21,15 +21,7 @@ exports.getUserPosition = userPoints => {
   if (userPoints < 0) return 'DEVELOPER';
   else if (userPoints >= userPositions.CEO) return 'CEO';
 
-  return Object.entries(userPositions).find(position => {
-    /**
-     * position[0] = the obj key, for example: DEVELOPER
-     * position[1][0] = The first number of the array.
-     * position[1][1] = The second number of the array.
-     */
-    if (isBetweenTwoNumbers(userPoints, position[1][0], position[1][1])) return position[0];
-    return false;
-  })[0];
+  return findPointKey(userPositions, userPoints);
 };
 
 exports.getAllUsers = async query => {
