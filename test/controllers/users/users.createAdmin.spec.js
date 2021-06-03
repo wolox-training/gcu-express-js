@@ -1,38 +1,26 @@
 const request = require('supertest');
+const { factory } = require('factory-girl');
+const jwt = require('jsonwebtoken');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
-const { updateUser } = require('../../../app/services/userService');
+const { factoryByModel } = require('../../factory/factory_by_models');
+
+const verify = jest.spyOn(jwt, 'verify');
 
 describe('POST /admin/users', () => {
-  let jwtToken = null;
+  factoryByModel('user');
+  verify.mockImplementationOnce(() => ({ id: 1, role: 'admin' }));
 
   beforeEach(async done => {
-    const { body } = await request(app)
-      .post('/users/signup')
-      .send({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@wolox.com.ar',
-        password: 'Sherman33'
-      });
-    await updateUser(body.user.id, { role: 'admin' });
-
+    const userAttrs = await factory.attrs('user');
     await request(app)
       .post('/users/signup')
       .send({
-        firstName: 'Normal',
-        lastName: 'User',
-        email: 'normal@wolox.com.ar',
+        ...userAttrs,
+        email: `${userAttrs.email}@wolox.com.ar`,
         password: 'Sherman33'
       });
 
-    const loginAdminRequest = await request(app)
-      .post('/users/sessions')
-      .send({
-        email: 'johndoe@wolox.com.ar',
-        password: 'Sherman33'
-      });
-    jwtToken = loginAdminRequest.body.token;
     done();
   });
 
@@ -57,7 +45,7 @@ describe('POST /admin/users', () => {
         email: 'jdoe@wolox.com.ar',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const createdUser = await UserModel.findOne({
       where: {
@@ -73,30 +61,8 @@ describe('POST /admin/users', () => {
     expect(createdUser.email).toEqual('jdoe@wolox.com.ar');
   });
 
-  it('Should return a not admin role authorization', async () => {
-    const { body } = await request(app)
-      .post('/users/sessions')
-      .send({
-        email: 'normal@wolox.com.ar',
-        password: 'Sherman33'
-      });
-
-    const userToken = body.user.token;
-
-    const { statusCode } = await request(app)
-      .post('/admin/users')
-      .send({
-        firstName: 'Normal',
-        lastName: 'User',
-        email: 'normal@wolox.com.ar',
-        password: 'Sherman33'
-      })
-      .set('Authorization', `Bearer ${userToken}`);
-
-    expect(statusCode).toBe(401);
-  });
-
   it('Should change the user role to admin role', async () => {
+    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin' }));
     const { statusCode, body } = await request(app)
       .post('/admin/users')
       .send({
@@ -105,10 +71,10 @@ describe('POST /admin/users', () => {
         email: 'normal@wolox.com.ar',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const users = await UserModel.count();
-    expect(statusCode).toBe(200);
+    expect(statusCode).toBe(201);
     expect(body.user.role).toBe('admin');
     expect(users).toBe(2);
   });
@@ -121,7 +87,7 @@ describe('POST /admin/users', () => {
         lastName: 'Cutraro',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const createdUser = await UserModel.findOne({
       where: {
@@ -143,7 +109,8 @@ describe('POST /admin/users', () => {
         lastName: 'Cutraro',
         email: 'german.cutraro@wolox.com.ar',
         password: 'bad'
-      });
+      })
+      .set('Authorization', 'Bearer abc');
 
     const createdUser = await UserModel.findOne({
       where: {
@@ -154,5 +121,21 @@ describe('POST /admin/users', () => {
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
     expect(response.body).toHaveProperty('message', 'La contraseña debe tener como minimo 8 caracteres');
     expect(createdUser).toBe(null);
+  });
+
+  it('Should return a not admin role authorization', async () => {
+    verify.mockImplementationOnce(() => ({ id: 1, role: 'user' }));
+
+    const { statusCode } = await request(app)
+      .post('/admin/users')
+      .send({
+        firstName: 'Normal',
+        lastName: 'User',
+        email: 'normal@wolox.com.ar',
+        password: 'Sherman33'
+      })
+      .set('Authorization', 'Bearer abc');
+
+    expect(statusCode).toBe(403);
   });
 });
