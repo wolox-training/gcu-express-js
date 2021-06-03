@@ -53,5 +53,7 @@ exports.login = user => {
 
 exports.updateUser = async (userId, body) => {
   const userUpdated = await UserModel.update(body, { where: { id: userId }, returning: true });
-  return userUpdated[1][0].get();
+  if (userUpdated[1][0]) return userUpdated[1][0].get();
+
+  return {};
 };
