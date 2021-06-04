@@ -33,5 +33,10 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'users'
     }
   );
+
+  User.associate = ({ weet }) => {
+    User.hasMany(weet);
+  };
+
   return User;
 };
