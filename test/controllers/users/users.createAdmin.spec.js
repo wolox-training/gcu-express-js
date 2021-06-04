@@ -1,14 +1,11 @@
 const request = require('supertest');
-// const { factory } = require('factory-girl');
 const jwt = require('jsonwebtoken');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
-const { factoryByModel } = require('../../factory/factory_by_models');
 
 const verify = jest.spyOn(jwt, 'verify');
 
 describe('POST /admin/users', () => {
-  factoryByModel('user');
   verify.mockImplementationOnce(() => ({ id: 1, role: 'admin' }));
 
   it('Should throw a non authorized error', async () => {
