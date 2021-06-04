@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
 
     const token = authHeader.split('Bearer ')[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    if (!payload.id) return res.sendStatus(401);
+    if (!payload.id || !payload.role) return res.sendStatus(401);
 
     req.user = payload;
   } catch (err) {

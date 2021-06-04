@@ -17,7 +17,8 @@ exports.encryptPassword = async password => {
   return hash;
 };
 
-const generateToken = userId => jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30m' });
+const generateToken = user =>
+  jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30m' });
 
 exports.comparePassword = async (password, dbPassword) => {
   const match = await bcrypt.compare(password, dbPassword);
@@ -26,25 +27,33 @@ exports.comparePassword = async (password, dbPassword) => {
 
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
-exports.createUser = async ({ firstName, lastName, email, password }) => {
+exports.createUser = async ({ firstName, lastName, email, role, password }) => {
   const hash = await this.encryptPassword(password);
 
   const user = await UserModel.create({
     firstName,
     lastName,
     email: formatEmail(email),
-    password: hash
+    password: hash,
+    role
   });
 
-  const token = generateToken(user.id);
+  const token = generateToken(user);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
 
 exports.login = user => {
-  const token = generateToken(user.id);
+  const token = generateToken(user);
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
+};
+
+exports.updateUser = async (userId, body) => {
+  const userUpdated = await UserModel.update(body, { where: { id: userId }, returning: true });
+  if (userUpdated[1][0]) return userUpdated[1][0].get();
+
+  return {};
 };
