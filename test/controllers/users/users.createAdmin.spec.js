@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { factory } = require('factory-girl');
+// const { factory } = require('factory-girl');
 const jwt = require('jsonwebtoken');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
@@ -10,19 +10,6 @@ const verify = jest.spyOn(jwt, 'verify');
 describe('POST /admin/users', () => {
   factoryByModel('user');
   verify.mockImplementationOnce(() => ({ id: 1, role: 'admin' }));
-
-  beforeEach(async done => {
-    const userAttrs = await factory.attrs('user');
-    await request(app)
-      .post('/users/signup')
-      .send({
-        ...userAttrs,
-        email: `${userAttrs.email}@wolox.com.ar`,
-        password: 'Sherman33'
-      });
-
-    done();
-  });
 
   it('Should throw a non authorized error', async () => {
     await request(app)
@@ -76,7 +63,7 @@ describe('POST /admin/users', () => {
     const users = await UserModel.count();
     expect(statusCode).toBe(201);
     expect(body.user.role).toBe('admin');
-    expect(users).toBe(2);
+    expect(users).toBe(1);
   });
 
   it('Should return a validation error with an empty required param', async () => {
