@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Weet.associate = ({ user }) => {
-    Weet.belongsTo(user, { foreignKey: 'userId' });
+    Weet.belongsTo(user, { foreignKey: 'user_id' });
   };
 
   return Weet;

@@ -9,7 +9,8 @@ const errorMessages = {
   lastNameRequired: 'Apellido requerido',
   userAlreadyExist: 'Usuario existente',
   userNotFound: 'No se encontró al usuario',
-  invalidCredentials: 'Credenciales incorrectas'
+  invalidCredentials: 'Credenciales incorrectas',
+  invalidWeets: 'The weet must be lower than 140 characters'
 };
 
 module.exports = errorMessages;

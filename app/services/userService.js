@@ -18,7 +18,7 @@ exports.encryptPassword = async password => {
 };
 
 const generateToken = user =>
-  jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '30m' });
+  jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30m' });
 
 exports.comparePassword = async (password, dbPassword) => {
   const match = await bcrypt.compare(password, dbPassword);
