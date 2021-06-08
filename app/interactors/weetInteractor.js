@@ -3,8 +3,6 @@ const userService = require('../services/userService');
 const errorMessages = require('../constants/errorMessages');
 const { notFoundError } = require('../errors');
 
-exports.getWeets = query => weetService.getAllWeets(query);
-
 exports.createWeet = async body => {
   const user = await userService.findUserByEmail(body.email);
   if (!user) throw notFoundError(errorMessages.userNotFound);
