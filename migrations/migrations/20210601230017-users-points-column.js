@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn('users', 'points', {
       type: Sequelize.INTEGER,
       defaultValue: 0,
-      allowNull: true
+      allowNull: false
     });
   },
 
