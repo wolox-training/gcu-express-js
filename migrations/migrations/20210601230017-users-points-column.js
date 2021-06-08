@@ -10,6 +10,6 @@ module.exports = {
   },
 
   down: async queryInterface => {
-    await queryInterface.removeColumn('users', 'role');
+    await queryInterface.removeColumn('users', 'points');
   }
 };
