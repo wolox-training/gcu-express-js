@@ -112,6 +112,24 @@ describe('POST /weets/:id/ratings', () => {
     expect(weetAuthor.points).toBe(2);
   });
 
+  it('Should have the same points with the same user rating it', async () => {
+    await request(app)
+      .post('/weets/1/ratings')
+      .send({ score: 1 })
+      .set('Authorization', 'Bearer abc');
+
+    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
+    const response = await request(app)
+      .post('/weets/1/ratings')
+      .send({ score: 1 })
+      .set('Authorization', 'Bearer abc');
+
+    const weetAuthor = await UserModel.findByPk(1);
+
+    expect(response.statusCode).toBe(200);
+    expect(weetAuthor.points).toBe(1);
+  });
+
   it('Should update the user points to zero', async () => {
     await request(app)
       .post('/weets/1/ratings')
