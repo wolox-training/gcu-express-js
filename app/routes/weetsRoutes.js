@@ -1,25 +1,12 @@
 // eslint-disable-next-line new-cap
 const router = require('express').Router();
-const weetInteractor = require('../interactors/weetInteractor');
-const { getWeet } = require('../controllers/weetsController');
 const protectedRoute = require('../middlewares/protectedRoute');
-const asyncWrapper = require('../utils/asyncWrapper');
-const weetMapper = require('../mappers/weetMapper');
-const httpCodes = require('../constants/httpCodes');
+const validateSchema = require('../middlewares/validateSchema');
+const { paginationSchema } = require('../validations');
+const weetController = require('../controllers/weetController');
 
-router.get('/', [], getWeet);
+router.get('/', [protectedRoute, validateSchema(paginationSchema)], weetController.getWeets);
 
-router.post(
-  '/',
-  [protectedRoute],
-  asyncWrapper(async (req, res) => {
-    const weet = await weetInteractor.createWeet({
-      ...req.body,
-      userId: req.user.id,
-      email: req.user.email
-    });
-    return res.status(httpCodes.CREATED).json(weetMapper(weet));
-  })
-);
+router.post('/', [protectedRoute], weetController.createWeet);
 
 module.exports = router;

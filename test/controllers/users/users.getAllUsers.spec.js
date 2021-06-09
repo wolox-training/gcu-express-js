@@ -45,6 +45,8 @@ describe('GET /users', () => {
     expect(statusCode).toEqual(200);
     expect(body.users).toBeDefined();
     expect(body.users).toHaveLength(2);
+    expect(body.users[0].points).toBeDefined();
+    expect(body.users[0].points).toBe('DEVELOPER');
     expect(body.pagination).toBeDefined();
   });
 

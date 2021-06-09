@@ -19,12 +19,24 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         field: 'last_name'
       },
-      email: { type: DataTypes.STRING, allowNull: false, unique: true },
-      password: { type: DataTypes.STRING, allowNull: false },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       role: {
         // eslint-disable-next-line new-cap
         type: DataTypes.ENUM(['user', 'admin']),
         defaultValue: 'user'
+      },
+      points: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: true
       }
     },
     {
@@ -34,8 +46,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  User.associate = ({ weet }) => {
+  User.associate = ({ weet, calification }) => {
     User.hasMany(weet);
+    User.hasMany(calification);
   };
 
   return User;

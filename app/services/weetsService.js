@@ -1,5 +1,6 @@
 const request = require('../utils/request');
 const WeetModel = require('../models').weet;
+const paginate = require('../utils/paginate');
 const logger = require('../logger');
 
 const getRandomNumber = () => Math.floor(Math.random() * (9999 - 0 + 1));
@@ -12,6 +13,11 @@ exports.getOneRandomPhrase = async () => {
     await this.getOneRandomPhrase();
   }
   return data;
+};
+
+exports.getAllWeets = async query => {
+  const { results, pagination } = await paginate(WeetModel, {}, query);
+  return { results, pagination };
 };
 
 exports.create = async body => {

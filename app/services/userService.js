@@ -4,6 +4,25 @@ const UserModel = require('../models').user;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
+const userPositions = require('../constants/userPositions');
+const findPointKey = require('../utils/findPointKey');
+
+const generateToken = user =>
+  jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30m' });
+
+exports.comparePassword = async (password, dbPassword) => {
+  const match = await bcrypt.compare(password, dbPassword);
+  return match;
+};
+
+exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
+
+exports.getUserPosition = userPoints => {
+  if (userPoints < 0) return 'DEVELOPER';
+  else if (userPoints >= userPositions.CEO) return 'CEO';
+
+  return findPointKey(userPositions, userPoints);
+};
 
 exports.getAllUsers = async query => {
   const { results, pagination } = await paginate(UserModel, {}, query);
@@ -16,16 +35,6 @@ exports.encryptPassword = async password => {
   const hash = await bcrypt.hash(password, salt);
   return hash;
 };
-
-const generateToken = user =>
-  jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30m' });
-
-exports.comparePassword = async (password, dbPassword) => {
-  const match = await bcrypt.compare(password, dbPassword);
-  return match;
-};
-
-exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
 exports.createUser = async ({ firstName, lastName, email, role, password }) => {
   const hash = await this.encryptPassword(password);
