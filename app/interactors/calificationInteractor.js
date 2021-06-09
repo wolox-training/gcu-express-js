@@ -6,20 +6,18 @@ const errorMessages = require('../constants/errorMessages');
 const { notFoundError } = require('../errors');
 
 exports.rateWeet = async body => {
-  const user = await userService.findUserByEmail(body.email);
-  if (!user) throw notFoundError(errorMessages.userNotFound);
+  const ratingUser = await userService.findUserByEmail(body.email);
+  if (!ratingUser) throw notFoundError(errorMessages.userNotFound);
 
   const weet = await weetService.findWeetById(body.weetId);
-  if (!weet) throw notFoundError(errorMessages.userNotFound);
+  if (!weet) throw notFoundError(errorMessages.weetNotFound);
 
   const weetAuthor = await userService.findUserById(weet.userId);
-  if (!weetAuthor) throw notFoundError(errorMessages.weetNotFound);
+  if (!weetAuthor) throw notFoundError(errorMessages.weetAuthorNotFound);
 
   const [rating] = await CalificationModel.findOrCreate({
-    where: { id: 1 }
+    where: { weetId: body.weetId, ratingUserId: ratingUser.id }
   });
-
-  console.log(rating);
 
   const transaction = await calificationService.startTransaction(rating, weetAuthor, body.score);
 

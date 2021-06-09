@@ -15,7 +15,8 @@ const errorMessages = {
   invalidLimitPagination: 'Límite no válido',
   weetNotFound: 'Weet not found',
   scoreRequired: 'Score required',
-  invalidScore: 'Invalid Score. Must be either 1 or -1'
+  invalidScore: 'Invalid Score. Must be either 1 or -1',
+  weetAuthorNotFound: 'Weet author not found'
 };
 
 module.exports = errorMessages;
