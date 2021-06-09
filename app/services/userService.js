@@ -17,6 +17,8 @@ exports.comparePassword = async (password, dbPassword) => {
 
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
+exports.findUserById = id => UserModel.findByPk(id);
+
 exports.getUserPosition = userPoints => {
   if (userPoints < 0) return 'DEVELOPER';
   else if (userPoints >= userPositions.CEO) return 'CEO';
