@@ -19,6 +19,6 @@ const sendCongratulationEmail = asyncWrapper(async () => {
 });
 
 module.exports = {
-  congratsJob: new CronJob('*/30 * * * * *', () => sendCongratulationEmail()),
+  congratsJob: new CronJob('00 00 00 * * *', () => sendCongratulationEmail()),
   sendCongratulationEmail
 };
