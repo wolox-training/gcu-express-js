@@ -8,7 +8,7 @@ const paginate = require('../utils/paginate');
 const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
 
-const generateToken = user =>
+exports.generateToken = user =>
   jwt.sign({ id: user.id, role: user.role, email: user.email, iat: Date.now() }, process.env.JWT_SECRET, {
     expiresIn: '30m'
   });
@@ -52,14 +52,14 @@ exports.createUser = async ({ firstName, lastName, email, role, password }) => {
     role
   });
 
-  const token = generateToken(user);
+  const token = this.generateToken(user);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
 
 exports.login = user => {
-  const token = generateToken(user);
+  const token = this.generateToken(user);
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
