@@ -15,9 +15,9 @@ module.exports = async (req, res, next) => {
       where: { userId: payload.id },
       order: [['createdAt', 'DESC']],
       limit: 1
-    })[0];
+    });
 
-    if (oldSession && payload.iat <= oldSession[0].logoutTime) return res.sendStatus(401);
+    if (oldSession[0] && payload.iat <= oldSession[0].logoutTime) return res.sendStatus(401);
 
     // eslint-disable-next-line require-atomic-updates
     req.user = payload;
