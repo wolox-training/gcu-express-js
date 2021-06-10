@@ -7,7 +7,7 @@ const { generateToken } = require('../../../app/services/userService');
 
 factory.define('user', UserModel, {});
 
-describe('POST /users/signup', () => {
+describe('POST /users/sessions/invalidate_all', () => {
   let token = null;
 
   beforeEach(async () => {
