@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { sequelize } = require('../models');
 const UserModel = require('../models').user;
 const SessionModel = require('../models').session;
+const WeetModel = require('../models').weet;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
@@ -21,6 +23,25 @@ exports.comparePassword = async (password, dbPassword) => {
 exports.findUserByEmail = email => UserModel.findOne({ where: { email: formatEmail(email) } });
 
 exports.findUserById = id => UserModel.findByPk(id);
+
+exports.findTopWeetAuthor = async () => {
+  try {
+    const mostWordWeetAuthor = await WeetModel.findAll({
+      where: {},
+      order: [[sequelize.fn('length', sequelize.col('content')), 'DESC']]
+    });
+
+    if (!mostWordWeetAuthor[0]) return null;
+
+    const topUser = await UserModel.findByPk(mostWordWeetAuthor[0].userId);
+    if (!topUser) return false;
+
+    return topUser;
+  } catch (err) {
+    logger.info(`findTopWeetAuthor ${err.message}`);
+    return false;
+  }
+};
 
 exports.getUserPosition = userPoints => {
   if (userPoints < 0) return 'DEVELOPER';
