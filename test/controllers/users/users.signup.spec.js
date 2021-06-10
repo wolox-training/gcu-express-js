@@ -12,6 +12,11 @@ describe('POST /users/signup', () => {
     done();
   });
 
+  afterEach(done => {
+    jest.resetAllMocks();
+    done();
+  });
+
   it('Should create a user', async () => {
     const { statusCode, body } = await request(app)
       .post('/users/signup')
