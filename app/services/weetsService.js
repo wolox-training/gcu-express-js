@@ -25,3 +25,5 @@ exports.create = async body => {
 
   return weet;
 };
+
+exports.findWeetById = id => WeetModel.findByPk(id);
