@@ -15,6 +15,7 @@ exports.startTransaction = async (rating, user, score) => {
 
     await transaction.commit();
   } catch (err) {
+    logger.info('Transaction error: ', err.message);
     if (transaction.rollback) await transaction.rollback();
     throw err;
   }
