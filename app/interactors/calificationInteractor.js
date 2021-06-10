@@ -6,10 +6,12 @@ const errorMessages = require('../constants/errorMessages');
 const { notFoundError } = require('../errors');
 
 exports.rateWeet = async body => {
-  const ratingUser = await userService.findUserByEmail(body.email);
-  if (!ratingUser) throw notFoundError(errorMessages.userNotFound);
+  const [ratingUser, weet] = await Promise.all([
+    userService.findUserByEmail(body.email),
+    weetService.findWeetById(body.weetId)
+  ]);
 
-  const weet = await weetService.findWeetById(body.weetId);
+  if (!ratingUser) throw notFoundError(errorMessages.userNotFound);
   if (!weet) throw notFoundError(errorMessages.weetNotFound);
 
   const weetAuthor = await userService.findUserById(weet.userId);
