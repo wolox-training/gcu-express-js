@@ -1,8 +1,17 @@
 const request = require('supertest');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
+const sendEmail = require('../../../app/utils/sendEmail');
+const templates = require('../../../app/constants/templates');
+
+jest.mock('../../../app/utils/sendEmail');
 
 describe('POST /users/signup', () => {
+  beforeEach(done => {
+    sendEmail.mockImplementationOnce(() => null);
+    done();
+  });
+
   it('Should create a user', async () => {
     const { statusCode, body } = await request(app)
       .post('/users/signup')
@@ -25,6 +34,29 @@ describe('POST /users/signup', () => {
     expect(createdUser.firstName).toEqual('John');
     expect(createdUser.lastName).toEqual('Doe');
     expect(createdUser.email).toEqual('jdoe@wolox.com.ar');
+  });
+
+  it('Should create a user and send the welcome email', async () => {
+    const { statusCode } = await request(app)
+      .post('/users/signup')
+      .send({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'jdoe@wolox.com.ar',
+        password: 'Sherman33'
+      });
+
+    const createdUser = await UserModel.findOne({
+      where: {
+        email: 'jdoe@wolox.com.ar'
+      }
+    });
+
+    expect(statusCode).toEqual(201);
+    expect(sendEmail.mock.calls.length).toBe(1);
+    expect(sendEmail.mock.calls[0][0]).toBe(createdUser.email);
+    expect(sendEmail.mock.calls[0][1]).toBe(templates.welcomeEmail.subject);
+    expect(sendEmail.mock.calls[0][2]).toBe(templates.welcomeEmail.text(createdUser.email));
   });
 
   it('Should return a invalid validation email error', async () => {
