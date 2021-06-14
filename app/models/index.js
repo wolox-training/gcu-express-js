@@ -7,13 +7,11 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
 // console.log(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
-console.log(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  ssl: { rejectUnauthorized: false }
-});
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  ssl: { rejectUnauthorized: false }
+  dialectOptions: {
+    ssl: { rejectUnauthorized: false }
+  }
 });
 
 fs.readdirSync(__dirname)
