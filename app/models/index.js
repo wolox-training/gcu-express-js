@@ -9,8 +9,10 @@ const db = {};
 
 let sequelize = null;
 
+console.log(dbConfig);
+
 if (process.env.NODE_ENV === 'production') {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
+  sequelize = new Sequelize(dbConfig.database, {
     dialect: 'postgres',
     dialectOptions: {
       ssl: { rejectUnauthorized: false }
