@@ -9,6 +9,8 @@ const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
 const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
+const errorMessages = require('../constants/errorMessages');
+const { databaseError } = require('../errors');
 
 exports.generateToken = user =>
   jwt.sign({ id: user.id, role: user.role, email: user.email, iat: Date.now() }, process.env.JWT_SECRET, {
@@ -38,7 +40,7 @@ exports.findTopWeetAuthor = async () => {
     return topUser;
   } catch (err) {
     logger.info(`findTopWeetAuthor ${err.message}`);
-    return err;
+    throw databaseError(errorMessages.topWeetAuthorError);
   }
 };
 
