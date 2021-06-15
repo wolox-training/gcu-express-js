@@ -9,6 +9,8 @@ const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
 const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
+const templates = require('../constants/templates');
+const sendEmail = require('../utils/sendEmail');
 const errorMessages = require('../constants/errorMessages');
 const { databaseError } = require('../errors');
 
@@ -63,6 +65,9 @@ exports.encryptPassword = async password => {
   return hash;
 };
 
+const sendWelcomeEmail = userEmail =>
+  sendEmail(userEmail, templates.welcomeEmail.subject, templates.welcomeEmail.text(userEmail));
+
 exports.createUser = async ({ firstName, lastName, email, role, password }) => {
   const hash = await this.encryptPassword(password);
 
@@ -75,6 +80,7 @@ exports.createUser = async ({ firstName, lastName, email, role, password }) => {
   });
 
   const token = this.generateToken(user);
+  await sendWelcomeEmail(user.email);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
   return { user, token };
