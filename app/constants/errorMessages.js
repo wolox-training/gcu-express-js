@@ -16,7 +16,8 @@ const errorMessages = {
   weetNotFound: 'Weet not found',
   scoreRequired: 'Score required',
   invalidScore: 'Invalid Score. Must be either 1 or -1',
-  weetAuthorNotFound: 'Weet author not found'
+  weetAuthorNotFound: 'Weet author not found',
+  topWeetAuthorError: 'An error has ocurred finding the top weet author'
 };
 
 module.exports = errorMessages;
