@@ -7,17 +7,7 @@ const dbConfig = require('../../config/db')[config.environment];
 const basename = path.basename(__filename);
 const db = {};
 
-let sequelize = null;
-
-if (process.env.NODE_ENV === 'production') {
-  sequelize = new Sequelize(dbConfig.database, {
-    ...dbConfig,
-    dialect: 'postgres',
-    dialectOptions: {
-      ssl: { rejectUnauthorized: false }
-    }
-  });
-} else sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 
 fs.readdirSync(__dirname)
   .filter(file => file.indexOf('.') !== 0 && file !== basename && file.endsWith('Model.js'))
