@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const UserModel = require('../models').user;
+const SessionModel = require('../models').session;
 const logger = require('../logger');
 const formatEmail = require('../utils/formatEmail');
 const paginate = require('../utils/paginate');
 const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
 
-const generateToken = user =>
-  jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, { expiresIn: '30m' });
+exports.generateToken = user =>
+  jwt.sign({ id: user.id, role: user.role, email: user.email, iat: Date.now() }, process.env.JWT_SECRET, {
+    expiresIn: '30m'
+  });
 
 exports.comparePassword = async (password, dbPassword) => {
   const match = await bcrypt.compare(password, dbPassword);
@@ -49,14 +52,14 @@ exports.createUser = async ({ firstName, lastName, email, role, password }) => {
     role
   });
 
-  const token = generateToken(user);
+  const token = this.generateToken(user);
 
   logger.info(`Usuario creado: ${user.firstName} ${user.lastName}`);
   return { user, token };
 };
 
 exports.login = user => {
-  const token = generateToken(user);
+  const token = this.generateToken(user);
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
@@ -66,3 +69,5 @@ exports.updateUser = async (userId, body) => {
   const userUpdated = await UserModel.update(body, { where: { id: userId }, returning: true });
   return userUpdated[1][0].get();
 };
+
+exports.destroySession = userId => SessionModel.create({ userId, logoutTime: Date.now() });
