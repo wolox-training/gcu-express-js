@@ -11,6 +11,8 @@ const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
 const templates = require('../constants/templates');
 const sendEmail = require('../utils/sendEmail');
+const errorMessages = require('../constants/errorMessages');
+const { databaseError } = require('../errors');
 
 exports.generateToken = user =>
   jwt.sign({ id: user.id, role: user.role, email: user.email, iat: Date.now() }, process.env.JWT_SECRET, {
@@ -29,19 +31,18 @@ exports.findUserById = id => UserModel.findByPk(id);
 exports.findTopWeetAuthor = async () => {
   try {
     const mostWordWeetAuthor = await WeetModel.findAll({
+      limit: 1,
       where: {},
       order: [[sequelize.fn('length', sequelize.col('content')), 'DESC']]
     });
 
-    if (!mostWordWeetAuthor[0]) return null;
-
-    const topUser = await UserModel.findByPk(mostWordWeetAuthor[0].userId);
-    if (!topUser) return false;
+    let topUser = null;
+    if (mostWordWeetAuthor[0]) topUser = await UserModel.findByPk(mostWordWeetAuthor[0].userId);
 
     return topUser;
   } catch (err) {
     logger.info(`findTopWeetAuthor ${err.message}`);
-    return false;
+    throw databaseError(errorMessages.topWeetAuthorError);
   }
 };
 
