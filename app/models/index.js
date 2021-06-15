@@ -9,10 +9,9 @@ const db = {};
 
 let sequelize = null;
 
-console.log(dbConfig);
-
 if (process.env.NODE_ENV === 'production') {
   sequelize = new Sequelize(dbConfig.database, {
+    ...dbConfig,
     dialect: 'postgres',
     dialectOptions: {
       ssl: { rejectUnauthorized: false }
