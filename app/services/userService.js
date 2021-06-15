@@ -27,19 +27,18 @@ exports.findUserById = id => UserModel.findByPk(id);
 exports.findTopWeetAuthor = async () => {
   try {
     const mostWordWeetAuthor = await WeetModel.findAll({
+      limit: 1,
       where: {},
       order: [[sequelize.fn('length', sequelize.col('content')), 'DESC']]
     });
 
-    if (!mostWordWeetAuthor[0]) return null;
-
-    const topUser = await UserModel.findByPk(mostWordWeetAuthor[0].userId);
-    if (!topUser) return false;
+    let topUser = null;
+    if (mostWordWeetAuthor[0]) topUser = await UserModel.findByPk(mostWordWeetAuthor[0].userId);
 
     return topUser;
   } catch (err) {
     logger.info(`findTopWeetAuthor ${err.message}`);
-    return false;
+    return err;
   }
 };
 
