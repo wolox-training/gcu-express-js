@@ -1,11 +1,8 @@
 const request = require('supertest');
 const { factory } = require('factory-girl');
-// const jwksRsa = require('jwks-rsa');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
-// const checkAuth = require('../../../app/middlewares/checkJwt');
 
-// const verify = jest.spyOn(jwksRsa, 'expressJwtSecret');
 factory.define('user', UserModel, {
   firstName: 'Sherman',
   lastName: 'Cutraro',
