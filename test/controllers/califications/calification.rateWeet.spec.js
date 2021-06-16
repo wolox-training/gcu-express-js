@@ -1,12 +1,15 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const { factory } = require('factory-girl');
 const UserModel = require('../../../app/models').user;
 const WeetModel = require('../../../app/models').weet;
 const CalificationModel = require('../../../app/models').calification;
 const app = require('../../../app');
 
-const verify = jest.spyOn(jwt, 'verify');
+jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+  req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+  return next();
+});
 factory.define('user', UserModel, {
   firstName: 'Sherman',
   lastName: 'Cutraro',
@@ -17,7 +20,6 @@ factory.define('weet', WeetModel, { id: 1, content: 'Lorem Ipsum', userId: facto
 
 describe('POST /weets/:id/ratings', () => {
   beforeEach(async done => {
-    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
     const usersCreated = await factory.createMany('user', 2, [
       {
         id: 1,
@@ -100,7 +102,12 @@ describe('POST /weets/:id/ratings', () => {
       .send({ score: 1 })
       .set('Authorization', 'Bearer abc');
 
-    verify.mockImplementationOnce(() => ({ id: 2, role: 'admin', email: 'nick@wolox.com.ar' }));
+    jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+      if (!req.headers.authorization) return res.sendStatus(401);
+      req.user = { id: 2, role: 'admin', email: 'nick@wolox.com.ar' };
+      return next();
+    });
+
     const response = await request(app)
       .post('/weets/1/ratings')
       .send({ score: 1 })
@@ -118,7 +125,12 @@ describe('POST /weets/:id/ratings', () => {
       .send({ score: 1 })
       .set('Authorization', 'Bearer abc');
 
-    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
+    jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+      if (!req.headers.authorization) return res.sendStatus(401);
+      req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+      return next();
+    });
+
     const response = await request(app)
       .post('/weets/1/ratings')
       .send({ score: 1 })
@@ -136,7 +148,12 @@ describe('POST /weets/:id/ratings', () => {
       .send({ score: 1 })
       .set('Authorization', 'Bearer abc');
 
-    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
+    jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+      if (!req.headers.authorization) return res.sendStatus(401);
+      req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+      return next();
+    });
+
     const response = await request(app)
       .post('/weets/1/ratings')
       .send({ score: -1 })
