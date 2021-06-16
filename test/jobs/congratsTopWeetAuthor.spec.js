@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const { factory } = require('factory-girl');
 const UserModel = require('../../app/models').user;
 const WeetModel = require('../../app/models').weet;
@@ -6,8 +5,12 @@ const sendEmail = require('../../app/utils/sendEmail');
 const { sendCongratulationEmail } = require('../../app/jobs/congratsTopWeetAuthor');
 const templates = require('../../app/constants/templates');
 
-const verify = jest.spyOn(jwt, 'verify');
 jest.mock('../../app/utils/sendEmail');
+jest.mock('../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+  req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+  return next();
+});
 
 factory.define('user', UserModel, {
   firstName: 'Sherman',
@@ -19,7 +22,6 @@ factory.define('weet', WeetModel, { userId: factory.assoc('user', 'id') });
 
 describe('Job - sendCongratulationEmail', () => {
   beforeEach(async done => {
-    verify.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
     sendEmail.mockImplementationOnce(() => null);
 
     const usersCreated = await factory.createMany('user', 2, [
@@ -50,12 +52,13 @@ describe('Job - sendCongratulationEmail', () => {
     done();
   });
 
-  it('Should send a congratulations email to the author of the longest weet', async () => {
+  it('Should send a congratulations email to the author of the longest weet', async done => {
     await sendCongratulationEmail();
 
     expect(sendEmail.mock.calls.length).toBe(1);
     expect(sendEmail.mock.calls[0][0]).toBe('nick@wolox.com.ar');
     expect(sendEmail.mock.calls[0][1]).toBe(templates.congratulationsEmail.subject);
     expect(sendEmail.mock.calls[0][2]).toBe(templates.congratulationsEmail.text(sendEmail.mock.calls[0][0]));
+    done();
   });
 });
