@@ -17,3 +17,6 @@ exports.authenticationError = message => internalError(message, exports.AUTHENTI
 
 exports.NOT_FOUND_ERROR = 'not_found_error';
 exports.notFoundError = message => internalError(message, exports.NOT_FOUND_ERROR);
+
+exports.AUTH0_ERROR = 'auth0_error';
+exports.auth0Error = message => internalError(message, exports.AUTH0_ERROR);

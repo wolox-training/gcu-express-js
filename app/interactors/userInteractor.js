@@ -4,10 +4,11 @@ const {
   login,
   comparePassword,
   getAllUsers,
-  updateUser
+  updateUser,
+  getAuth0Token
 } = require('../services/userService');
 const logger = require('../logger');
-const { databaseError, authenticationError } = require('../errors');
+const { databaseError, authenticationError, auth0Error } = require('../errors');
 const errorMessages = require('../constants/errorMessages');
 
 exports.getUsers = query => getAllUsers(query);
@@ -49,4 +50,16 @@ exports.createUserAdmin = async body => {
   }
 
   return createUser({ ...body, role: 'admin' });
+};
+
+exports.auth0 = async code => {
+  try {
+    const data = await getAuth0Token(code);
+    logger.info('Obtaining Auth0 token...');
+
+    return data;
+  } catch (err) {
+    logger.info('ERROR', err.message);
+    throw auth0Error(err.message);
+  }
 };
