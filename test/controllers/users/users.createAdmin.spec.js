@@ -1,42 +1,38 @@
 const request = require('supertest');
+const { factory } = require('factory-girl');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
-const { updateUser } = require('../../../app/services/userService');
+const userInteractor = require('../../../app/interactors/userInteractor');
+
+jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+  req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+  return next();
+});
+const login = jest.spyOn(userInteractor, 'auth0');
+
+factory.define('user', UserModel, {});
 
 describe('POST /admin/users', () => {
-  let jwtToken = null;
-
   beforeEach(async done => {
-    const { body } = await request(app)
-      .post('/users/signup')
-      .send({
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'johndoe@wolox.com.ar',
-        password: 'Sherman33'
-      });
-    await updateUser(body.user.id, { role: 'admin' });
-
-    await request(app)
-      .post('/users/signup')
-      .send({
-        firstName: 'Normal',
-        lastName: 'User',
-        email: 'normal@wolox.com.ar',
-        password: 'Sherman33'
-      });
-
-    const loginAdminRequest = await request(app)
-      .post('/users/sessions')
-      .send({
-        email: 'johndoe@wolox.com.ar',
-        password: 'Sherman33'
-      });
-    jwtToken = loginAdminRequest.body.token;
+    await factory.create('user', {
+      id: 1,
+      firstName: 'Sherman',
+      lastName: 'Cutraro',
+      password: 'Sherman33',
+      email: 'johndoe@wolox.com.ar',
+      role: 'admin'
+    });
     done();
   });
 
-  it('Should throw a non authorized error', async () => {
+  afterEach(done => {
+    factory.cleanUp();
+    jest.resetAllMocks();
+    done();
+  });
+
+  it('Should throw a non authorized error', async done => {
     await request(app)
       .post('/admin/users')
       .send({
@@ -46,18 +42,20 @@ describe('POST /admin/users', () => {
         password: 'Sherman33'
       })
       .expect(401);
+    done();
   });
 
-  it('Should create a user admin', async () => {
+  it('Should create a user admin', async done => {
     const { statusCode, body } = await request(app)
       .post('/admin/users')
       .send({
+        id: 10,
         firstName: 'John',
         lastName: 'Doe',
         email: 'jdoe@wolox.com.ar',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const createdUser = await UserModel.findOne({
       where: {
@@ -71,17 +69,11 @@ describe('POST /admin/users', () => {
     expect(createdUser.firstName).toEqual('John');
     expect(createdUser.lastName).toEqual('Doe');
     expect(createdUser.email).toEqual('jdoe@wolox.com.ar');
+    done();
   });
 
-  it('Should return a not admin role authorization', async () => {
-    const { body } = await request(app)
-      .post('/users/sessions')
-      .send({
-        email: 'normal@wolox.com.ar',
-        password: 'Sherman33'
-      });
-
-    const userToken = body.user.token;
+  it('Should return a not admin role authorization', async done => {
+    login.mockImplementationOnce(() => ({ id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' }));
 
     const { statusCode } = await request(app)
       .post('/admin/users')
@@ -91,29 +83,31 @@ describe('POST /admin/users', () => {
         email: 'normal@wolox.com.ar',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${userToken}`);
+      .set('Authorization', 'Bearer abc');
 
     expect(statusCode).toBe(401);
+    done();
   });
 
-  it('Should change the user role to admin role', async () => {
+  it('Should change the user role to admin role', async done => {
     const { statusCode, body } = await request(app)
       .post('/admin/users')
       .send({
         firstName: 'Normal',
         lastName: 'User',
-        email: 'normal@wolox.com.ar',
+        email: 'norm@wolox.com.ar',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const users = await UserModel.count();
     expect(statusCode).toBe(200);
     expect(body.user.role).toBe('admin');
     expect(users).toBe(2);
+    done();
   });
 
-  it('Should return a validation error with an empty required param', async () => {
+  it('Should return a validation error with an empty required param', async done => {
     const response = await request(app)
       .post('/admin/users')
       .send({
@@ -121,7 +115,7 @@ describe('POST /admin/users', () => {
         lastName: 'Cutraro',
         password: 'Sherman33'
       })
-      .set('Authorization', `Bearer ${jwtToken}`);
+      .set('Authorization', 'Bearer abc');
 
     const createdUser = await UserModel.findOne({
       where: {
@@ -133,9 +127,10 @@ describe('POST /admin/users', () => {
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
     expect(response.body).toHaveProperty('message', 'Email requerido');
     expect(createdUser).toBe(null);
+    done();
   });
 
-  it('Should return a weak password validation error', async () => {
+  it('Should return a weak password validation error', async done => {
     const response = await request(app)
       .post('/admin/users')
       .send({
@@ -154,5 +149,6 @@ describe('POST /admin/users', () => {
     expect(response.body).toHaveProperty('internal_code', 'validation_error');
     expect(response.body).toHaveProperty('message', 'La contraseña debe tener como minimo 8 caracteres');
     expect(createdUser).toBe(null);
+    done();
   });
 });

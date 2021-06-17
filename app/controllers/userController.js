@@ -14,9 +14,14 @@ exports.createUser = asyncWrapper(async (req, res) => {
   return res.status(httpCodes.CREATED).json({ user: userMapper(user), token });
 });
 
-exports.login = asyncWrapper(async (req, res) => {
+exports.session = asyncWrapper(async (req, res) => {
   const { user, token } = await userInteractor.signIn(req.body);
   return res.status(httpCodes.OK).json({ user: userMapper(user), token });
+});
+
+exports.login = asyncWrapper(async (req, res) => {
+  const tokens = await userInteractor.auth0(req.body.code);
+  return res.status(httpCodes.OK).json(tokens);
 });
 
 exports.deleteSessions = asyncWrapper(async (req, res) => {

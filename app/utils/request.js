@@ -1,9 +1,13 @@
 const axios = require('axios');
 
-const request = axios.create({
-  baseURL: 'http://numbersapi.com',
+exports.requestAuth0 = axios.create({
+  baseURL: process.env.AUTH0_DOMAIN,
   timeout: 1000,
   headers: { accept: 'application/json' }
 });
 
-module.exports = request;
+exports.requestNumber = axios.create({
+  baseURL: process.env.NUMBER_API_URL,
+  timeout: 1000,
+  headers: { accept: 'application/json' }
+});

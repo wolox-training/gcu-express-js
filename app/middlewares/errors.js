@@ -12,11 +12,12 @@ const statusCodes = {
 };
 
 exports.handle = (error, req, res, next) => {
-  if (error.internalCode) res.status(statusCodes[error.internalCode] || DEFAULT_STATUS_CODE);
-  else {
+  if (error.internalCode && !Number.isInteger(error.internalCode)) {
+    res.status(statusCodes[error.internalCode] || DEFAULT_STATUS_CODE);
+  } else {
     // Unrecognized error, notifying it to rollbar.
     next(error);
-    res.status(DEFAULT_STATUS_CODE);
+    res.status(error.internalCode || DEFAULT_STATUS_CODE);
   }
   logger.error(error);
   return res.send({ message: error.message, internal_code: error.internalCode });

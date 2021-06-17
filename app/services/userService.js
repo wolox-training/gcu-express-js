@@ -11,6 +11,7 @@ const userPositions = require('../constants/userPositions');
 const findPointKey = require('../utils/findPointKey');
 const templates = require('../constants/templates');
 const sendEmail = require('../utils/sendEmail');
+const { requestAuth0 } = require('../utils/request');
 
 exports.generateToken = user =>
   jwt.sign({ id: user.id, role: user.role, email: user.email, iat: Date.now() }, process.env.JWT_SECRET, {
@@ -90,6 +91,18 @@ exports.login = user => {
 
   logger.info(`Usuario logueado: ${user.firstName} ${user.lastName}`);
   return { user, token };
+};
+
+exports.getAuth0Token = async code => {
+  const { data } = await requestAuth0.post('/oauth/token', {
+    grant_type: 'authorization_code',
+    client_id: process.env.AUTH0_CLIENT_ID,
+    client_secret: process.env.AUTH0_CLIENT_SECRET,
+    redirect_uri: process.env.AUTH0_REDIRECT_URL,
+    code
+  });
+
+  return data;
 };
 
 exports.updateUser = async (userId, body) => {

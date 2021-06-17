@@ -1,15 +1,17 @@
 const request = require('supertest');
-const jwt = require('jsonwebtoken');
 const { factory } = require('factory-girl');
 const app = require('../../../app');
 const UserModel = require('../../../app/models').user;
 
-const verify = jest.spyOn(jwt, 'verify');
 factory.define('user', UserModel, {});
 
-describe('POST /weets', () => {
-  verify.mockImplementationOnce(() => ({ id: 1, role: 'user', email: 'johndoe@wolox.com.ar' }));
+jest.mock('../../../app/middlewares/checkJwt.js', () => (req, res, next) => {
+  if (!req.headers.authorization) return res.sendStatus(401);
+  req.user = { id: 1, role: 'admin', email: 'johndoe@wolox.com.ar' };
+  return next();
+});
 
+describe('POST /weets', () => {
   beforeEach(() => {
     factory.create('user', {
       id: 1,
@@ -21,13 +23,14 @@ describe('POST /weets', () => {
     });
   });
 
-  it('Should return a non authorized error', async () => {
+  it('Should return a non authorized error', async done => {
     await request(app)
       .post('/weets')
       .expect(401);
+    done();
   });
 
-  it('Should create a weet', async () => {
+  it('Should create a weet', async done => {
     const { statusCode, body } = await request(app)
       .post('/weets')
       .set('Authorization', 'Bearer abc');
@@ -36,5 +39,6 @@ describe('POST /weets', () => {
     expect(body.id).toBeDefined();
     expect(body.content).toBeDefined();
     expect(body.user).toBe(1);
+    done();
   });
 });
