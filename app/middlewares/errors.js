@@ -7,17 +7,17 @@ const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500,
   [errors.VALIDATION_ERROR]: 400,
-  [errors.AUTH0_ERROR]: 500,
   [errors.NOT_FOUND_ERROR]: 404,
   [errors.AUTHENTICATION_ERROR]: 401
 };
 
 exports.handle = (error, req, res, next) => {
-  if (error.internalCode) res.status(statusCodes[error.internalCode] || DEFAULT_STATUS_CODE);
-  else {
+  if (error.internalCode && !Number.isInteger(error.internalCode)) {
+    res.status(statusCodes[error.internalCode] || DEFAULT_STATUS_CODE);
+  } else {
     // Unrecognized error, notifying it to rollbar.
     next(error);
-    res.status(DEFAULT_STATUS_CODE);
+    res.status(error.internalCode || DEFAULT_STATUS_CODE);
   }
   logger.error(error);
   return res.send({ message: error.message, internal_code: error.internalCode });

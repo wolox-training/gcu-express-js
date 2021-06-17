@@ -60,6 +60,6 @@ exports.auth0 = async code => {
     return data;
   } catch (err) {
     logger.info('ERROR', err.message);
-    throw auth0Error(err.message);
+    throw auth0Error(err.message, err.response.status);
   }
 };
