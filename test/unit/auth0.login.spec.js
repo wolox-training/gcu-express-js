@@ -3,7 +3,7 @@ const { getAuth0Token } = require('../../app/services/userService');
 
 describe('Auth0', () => {
   it('Should return a Auth0 token access', async done => {
-    nock('https://gc-training.us.auth0.com')
+    nock(process.env.AUTH0_DOMAIN)
       .post('/oauth/token')
       .reply(200, {
         data: {
