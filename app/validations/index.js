@@ -1,12 +1,13 @@
-const { validationResult } = require('express-validator');
-const { validationError } = require('../errors');
+const userSchema = require('./schemas/userSchema');
+const sessionSchema = require('./schemas/sessionSchema');
+const paginationSchema = require('./schemas/paginationSchema');
+const calificationSchema = require('./schemas/calificationSchema');
+const auth0Schema = require('./schemas/auth0Schema');
 
-function checkValidations(req, res, next) {
-  const errorList = validationResult(req);
-
-  if (!errorList.isEmpty()) throw validationError(errorList.array()[0].msg);
-
-  next();
-}
-
-module.exports = checkValidations;
+module.exports = {
+  userSchema,
+  sessionSchema,
+  paginationSchema,
+  calificationSchema,
+  auth0Schema
+};

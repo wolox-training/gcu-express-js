@@ -1,19 +1,14 @@
 // eslint-disable-next-line new-cap
 const router = require('express').Router();
-const userInteractor = require('../interactors/userInteractor');
-const asyncWrapper = require('../utils/asyncWrapper');
-const checkValidations = require('../validations');
-const userValidations = require('../validations/userValidations');
-const userMapper = require('../mappers/userMapper');
-const httpCodes = require('../constants/httpCodes');
+const validateSchema = require('../middlewares/validateSchema');
+const { userSchema, sessionSchema, auth0Schema } = require('../validations');
+const userController = require('../controllers/userController');
+const checkJwt = require('../middlewares/checkJwt');
 
-router.post(
-  '/signup',
-  [userValidations.validateRegister, checkValidations],
-  asyncWrapper(async (req, res) => {
-    const { user, token } = await userInteractor.signUp(req.body);
-    return res.status(httpCodes.CREATED).json({ user: userMapper(user), token });
-  })
-);
+router.get('/', [checkJwt], userController.getUsers);
+router.post('/signup', [validateSchema(userSchema)], userController.createUser);
+router.post('/sessions', [validateSchema(sessionSchema)], userController.session);
+router.post('/login', [validateSchema(auth0Schema)], userController.login);
+router.post('/sessions/invalidate_all', [checkJwt], userController.deleteSessions);
 
 module.exports = router;

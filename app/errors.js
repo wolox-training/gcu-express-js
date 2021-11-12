@@ -11,3 +11,11 @@ exports.defaultError = message => internalError(message, exports.DEFAULT_ERROR);
 
 exports.VALIDATION_ERROR = 'validation_error';
 exports.validationError = message => internalError(message, exports.VALIDATION_ERROR);
+
+exports.AUTHENTICATION_ERROR = 'authentication_error';
+exports.authenticationError = message => internalError(message, exports.AUTHENTICATION_ERROR);
+
+exports.NOT_FOUND_ERROR = 'not_found_error';
+exports.notFoundError = message => internalError(message, exports.NOT_FOUND_ERROR);
+
+exports.auth0Error = (message, code) => internalError(message, code);
